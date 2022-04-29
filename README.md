@@ -17,3 +17,5 @@ The save.dat file is an example of what a saved workspace looks like and the ima
 To use the program, download all the files, install the packages and simply run </br>
 python AirCanvas.py in python
 
+
+This is an open source project. However, if you do use my code I would appriciate if you leave a link to my repository on your readme file.
