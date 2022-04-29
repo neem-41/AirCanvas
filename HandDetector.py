@@ -1,17 +1,12 @@
-import enum
-from operator import delitem
-import queue
-from re import S
+# @author: Swornim Chhetri
+# This is HandDetector class where the methods to draw, erase, etc are made.
+
 import mediapipe as mp
 import cv2
-import math
-from collections import deque
-import numpy as np
 import csv
 
-import matplotlib.pyplot as plt
-
 class HandDetector():
+    # Constructor for the Hand Detector Class
     def __init__(self):
         self.handpipe = mp.solutions.hands
         self.hands = self.handpipe.Hands(max_num_hands=1, model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5)
@@ -24,24 +19,32 @@ class HandDetector():
         self.rec = [] # for the rectangle.
         self.current_color = (0,0,255)
 
+    # Method to return the hand location
     def getHands(self):
         return self.hands
 
+    # Method to get the handpipe
     def getHandPipe(self):
         return self.handpipe
 
+    # The draw method to draw on the screen.
+    # Usage: draw(frame: camera input, canvas: canvas object, color: clr enum, list: landmark list, line: boolean, rectangle: boolean)
     def draw(self, frame, canvas, color, thickness, list, line, rectangle):
         lmlist = list
-                
+
+        # this creates the yellow circle around the index finger.        
         cv2.circle(frame, (lmlist[8][1], lmlist[8][2]), 10, (0,255,255))
         
+        # Only draw if the pinky finger is down.
         if (self.pinkyDown(lmlist)):
 
+            # get the () [null imitation] values in teh coordinates 
             empty = [i for i,value in enumerate(self.queue2) if value == ()]
-            # if it is line or rectangle then we onyl want two points at a section so remove the last drawn point
+            # if it is line or rectangle then we only want two points at a section so remove the last drawn point
             # if it is line or rectangle.
             if line or rectangle:
                 if len(empty) == 0:
+                    # if there are only two lines in the queue.
                     if len(self.queue) == 2:
                         self.queue.pop(-1)
                         self.queue2.pop(-1)
@@ -50,6 +53,7 @@ class HandDetector():
                         self.rec.pop(-1)
                         canvas.clear()
                 else:
+                    # if there are more than two points after the last drawn section.
                     if len(self.queue) == empty[-1] + 3:
                         self.queue.pop(-1)
                         self.queue2.pop(-1)
@@ -57,7 +61,8 @@ class HandDetector():
                         self.thickness.pop(-1)
                         self.rec.pop(-1)
                         canvas.clear()
-        
+
+            # add the new point to the coordinate system.
             self.queue.append((frame.shape[1] - lmlist[8][1], lmlist[8][2]))
             self.queue2.append((lmlist[8][1], lmlist[8][2]))
             self.color.append(color)
@@ -73,7 +78,7 @@ class HandDetector():
                     self.thickness.append(())
                     self.rec.append(())
 
-        # draw the lines on the screen
+
         length = len(self.queue)
         # if there are more than just one point on the queue
         if (length > 1):
@@ -83,7 +88,7 @@ class HandDetector():
                 # checking queue2 is full here to avoid error after queue is cleared.
                 if self.queue2:
                     if self.queue2[i] and self.queue2[i+1]:
-                        # flip the x-coordinate because the frame is flipped.
+                        # if rectangle is true then draw a rectangle else draw a line.
                         if self.rec[i]:
                             cv2.rectangle(frame, self.queue2[i], self.queue2[i+1], (self.color[i]), self.thickness[i])
                             cv2.rectangle(canvas.can, self.queue[i], self.queue[i+1], (self.color[i]), self.thickness[i])
@@ -114,12 +119,14 @@ class HandDetector():
                 for id, lm in enumerate(hand_landmarks.landmark):
                     h, w, c = frame.shape
                     cx, cy = int(lm.x*w), int(lm.y*h)
-                    # Adding the dots of hands to a list 8 is index finger tip.
+                    # Adding the dots of hands to a list. 8 is index finger tip.
                     lmlist.append([id,cx,cy])
                     
         return lmlist
 
 
+    # The erase method to erase the last drawn line.
+    # () on the queue means that the user has stopped drawing (pinky up). I will refer to this as a pause.
     def erase(self, canvas, list):
         empty = [i for i,value in enumerate(self.queue2) if value == ()]
         # if there is only one line drawn
@@ -134,7 +141,7 @@ class HandDetector():
                 # if only one pause and not drawing erase everything
                 if (len(empty) == 1):
                     lidex = 0
-                # if more than one pause erase everything after the second last pause
+                # if more than one pause erase everything after the second last pause - this deletes the last line
                 else:
                     lidex = empty[-2]
 
@@ -145,7 +152,7 @@ class HandDetector():
             self.thickness = self.thickness[0:lidex]
             self.rec = self.rec[0:lidex]
             
-            # without this is there is only one pause and the person is not drawing
+            # without this if there is only one pause and the person is not drawing
             # the lists will have () as the starting point. This will not affect the program 
             # but is a waste of memory
             if (lidex != 0):
@@ -155,7 +162,9 @@ class HandDetector():
                 self.thickness.append(())
                 self.rec.append(())
     
+    # This is the save method that saves the current working space.
     def save(self):
+        # opent he file and save the values setting ! as the delimiter.
         with open('save.dat', 'w') as file:
             file.write('!'.join(str(k) for k in self.queue) + '\n')
             file.write('!'.join(str(k) for k in self.queue2) + '\n')
@@ -163,7 +172,10 @@ class HandDetector():
             file.write('!'.join(str(k) for k in self.thickness) + '\n')
             file.write('!'.join(str(k) for k in self.rec) + '\n')
     
+    # This is the load method that loads the saved working space.
     def load(self, list):
+        # If the user is writing when this method is called a null is added to the coordinate system
+        # this way the laoded values are not joined with the drawing the user is making.
         if list:
             if self.pinkyDown(list):
                 self.queue.append(())
@@ -171,7 +183,8 @@ class HandDetector():
                 self.color.append(())
                 self.thickness.append(())
                 self.rec.append(())
-                
+
+        # Open the save file and add the values to the coordinate system.  
         with open('save.dat', 'r') as file:
             reader = csv.reader(file, delimiter = '!')
             for count, row in enumerate(reader):

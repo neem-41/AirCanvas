@@ -1,3 +1,6 @@
+#@author: Swornim Chhetri
+# This is color class that takes color input as BGR instead of RBG.
+# It was important to make this because the image is converted into BGR on the main page.
 import enum
 
 class clr(enum.Enum):
