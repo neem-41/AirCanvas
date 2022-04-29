@@ -16,7 +16,7 @@ python -m pip install mediapipe</br>
 
 The save.dat file is an example of what a saved workspace looks like and the image is an example of a saved workspace as an image.
 
-To use the program, download all the files, install the packages and simply run the following on a terminal.</br>
+To use the program, download all the files, install the packages and simply run the following on a terminal:</br>
 python AirCanvas.py 
 
 
