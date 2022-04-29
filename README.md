@@ -7,15 +7,17 @@ This experience inspired me to try and create a computer vision application wher
 of the project was to create an application that users can use with ease removing some of hurdles of using technologies. This project is the accumulation of my interest 
 in computer vision and also a test to see if ideas can be turned into actual code.
 
-To use the application, please make sure that you have OpenCV and MediaPipe are installed in your computer. On a bash terminal this can be easily done with the following code:
+To use the application, please make sure that you have OpenCV and MediaPipe installed in your computer. On a terminal this can be easily done with the following code:
 
 python -m pip install opencv </br>
 python -m pip install mediapipe</br>
 
+<b>IMPORATNT: Please use Python3 version, the OpenCV functions are implemented for Python3 and may not work with Python2</b>
+
 The save.dat file is an example of what a saved workspace looks like and the image is an example of a saved workspace as an image.
 
-To use the program, download all the files, install the packages and simply run </br>
-python AirCanvas.py in python
+To use the program, download all the files, install the packages and simply run the following on a terminal.</br>
+python AirCanvas.py 
 
 
 This is an open source project. However, if you do use my code I would appriciate if you leave a link to my repository on your readme file.
