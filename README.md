@@ -12,7 +12,7 @@ To use the application, please make sure that you have OpenCV and MediaPipe inst
 python -m pip install opencv </br>
 python -m pip install mediapipe</br>
 
-<b>IMPORATNT: Please use Python3 version, the OpenCV functions are implemented for Python3 and may not work with Python2</b>
+<b>IMPORATNT: Please use Python3, the OpenCV functions are implemented for Python3 and may not work with Python2</b>
 
 The save.dat file is an example of what a saved workspace looks like and the image is an example of a saved workspace as an image.
 
