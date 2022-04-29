@@ -9,11 +9,11 @@ in computer vision and also a test to see if ideas can be turned into actual cod
 
 To use the application, please make sure that you have OpenCV and MediaPipe are installed in your computer. On a bash terminal this can be easily done with the following code:
 
-python -m pip install opencv
-python -m pip install mediapipe
+python -m pip install opencv </br>
+python -m pip install mediapipe</br>
 
 The save.dat file is an example of what a saved workspace looks like and the image is an example of a saved workspace as an image.
 
-To use the program, download all the files, install the packages and simply run
+To use the program, download all the files, install the packages and simply run </br>
 python AirCanvas.py in python
 
